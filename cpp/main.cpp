@@ -8,11 +8,6 @@ extern "C"
   }
 }
 
-void hello_world()
-{
-  printf("hello, world! from main function \n");
-}
-
 int main()
 {
   printf("hello, world!\n");
