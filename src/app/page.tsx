@@ -10,6 +10,14 @@ export default function Home() {
       <p> web assembly getting started </p>
       <button
         onClick={() => {
+          const myClass = new module.MyClass();
+          myClass.sayHi();
+        }}
+      >
+        button with class
+      </button>
+      <button
+        onClick={() => {
           if (module) {
             module._sayHi();
           }
