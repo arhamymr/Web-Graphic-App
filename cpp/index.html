@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Compiled Project</title>
+  </head>
+  <body>
+    <button id="clickButton">Click</button>
+    <canvas id="myCanvas" width="2000" height="2000"></canvas>
+    <script>
+      Module = {
+        onRuntimeInitialized: function () {
+          (Module.canvas = document.getElementById('myCanvas')),
+            console.log(Module, 'moduke');
+          var instance = new Module.DesignTools();
+          console.log('instance', instance);
+          instance.draw();
+          instance.main_loop();
+        },
+      };
+      console.log(Module);
+    </script>
+    <script src="main.js"></script>
+    <script>
+      document
+        .getElementById('clickButton')
+        .addEventListener('click', function () {
+          console.log(window);
+          if (window.design_tools_module) {
+            console.log(
+              'Button clicked, calling function on DesignTools instance'
+            );
+            // Call a function on your DesignTools instance here
+            // Example: window.myModule.someFunction();
+          } else {
+            console.error('DesignTools instance is not initialized yet.');
+          }
+        });
+    </script>
+  </body>
+</html>

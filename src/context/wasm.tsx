@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
+import Script from 'next/script';
 
 interface WasmContextProps {
   module: any;
@@ -13,11 +20,22 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [module, setModule] = useState<any>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const loadWasm = async () => {
-    const loadmodule = await import('@/wasm/main.js');
-    const myModule = await loadmodule.default();
-    setModule(myModule);
+    try {
+      const loadmodule = await import('@/wasm/main.js');
+      const instance = await loadmodule.default();
+      console.log(loadmodule, instance, 'instance');
+      instance.canvas = document.getElementById('canvas');
+      const myModule = new instance.DesignTools();
+
+      myModule.draw();
+      myModule.main_loop();
+      setModule(myModule);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -25,9 +43,12 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <WasmContext.Provider value={{ module, loadWasm }}>
-      {children}
-    </WasmContext.Provider>
+    <>
+      <WasmContext.Provider value={{ module, loadWasm }}>
+        <canvas id="canvas" width="640" height="480"></canvas>
+        {children}
+      </WasmContext.Provider>
+    </>
   );
 };
 
