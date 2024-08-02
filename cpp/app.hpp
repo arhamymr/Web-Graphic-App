@@ -4,9 +4,11 @@
 #include <emscripten/html5.h>
 #include <SDL.h>
 #include <iostream>
+// #include "object.hpp"
 
 using namespace emscripten;
 using namespace std;
+
 class DesignTools
 {
 public:
@@ -87,6 +89,8 @@ public:
     // Fill the rectangle
     SDL_RenderFillRect(renderer, &rect);
     SDL_RenderPresent(renderer);
+
+    // ObjectItem obj;
   }
 
   void redraw()
@@ -209,14 +213,3 @@ private:
   uint32_t ticksForNextKeyDown = 0;
   SDL_Rect rect = {.x = 10, .y = 10, .w = 150, .h = 100};
 };
-
-// Define static instance pointer
-DesignTools *DesignTools::instance = nullptr;
-
-EMSCRIPTEN_BINDINGS(design_tools_class)
-{
-  class_<DesignTools>("DesignTools")
-      .constructor<>()
-      .function("main_loop", &DesignTools::main_loop)
-      .function("draw", &DesignTools::draw);
-}

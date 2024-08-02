@@ -20,13 +20,13 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [module, setModule] = useState<any>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const loadWasm = async () => {
     try {
       const loadmodule = await import('@/wasm/main.js');
+      console.log(loadmodule, 'loadmodule');
       const instance = await loadmodule.default();
-      console.log(loadmodule, instance, 'instance');
+      console.log(instance);
       instance.canvas = document.getElementById('canvas');
       const myModule = new instance.DesignTools();
 
