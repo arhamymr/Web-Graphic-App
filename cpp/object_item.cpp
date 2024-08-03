@@ -1,9 +1,9 @@
-#include "object.hpp"
+#include "object_item.hpp"
 
-class Object
+class ObjectItem
 {
 public:
-  Object();
+  ObjectItem();
   // int id = 0;
 
   // void render();
@@ -14,7 +14,7 @@ private:
   bool dragging = false;
 };
 
-Object::Object()
+ObjectItem::ObjectItem()
 {
-  std::cout << "hellow" << std::endl;
+  cout << "hellow" << endl;
 }

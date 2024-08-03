@@ -28,7 +28,7 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
       const instance = await loadmodule.default();
       console.log(instance);
       instance.canvas = document.getElementById('canvas');
-      const myModule = new instance.DesignTools();
+      const myModule = new instance.App();
 
       myModule.draw();
       myModule.main_loop();

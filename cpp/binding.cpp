@@ -3,10 +3,10 @@
 
 using namespace emscripten;
 
-EMSCRIPTEN_BINDINGS(design_tools_class)
+EMSCRIPTEN_BINDINGS(app_class)
 {
-  class_<DesignTools>("DesignTools")
+  class_<App>("App")
       .constructor<>()
-      .function("main_loop", &DesignTools::main_loop)
-      .function("draw", &DesignTools::draw);
+      .function("main_loop", &App::main_loop)
+      .function("draw", &App::draw);
 }
