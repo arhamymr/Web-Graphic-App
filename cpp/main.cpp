@@ -3,6 +3,8 @@
 int main()
 {
   App app;
-  app.main_loop();
+  app.mainLoop();
+
+  app.quit();
   return 0;
 }

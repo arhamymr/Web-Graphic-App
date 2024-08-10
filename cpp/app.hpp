@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <iostream>
-// #include "object_item.hpp"
+#include "object_item.hpp"
 
 using namespace std;
 
@@ -15,13 +15,15 @@ class App
 {
 public:
   App();
-  void main_loop();
+  void mainLoop();
   void onMouseMotion(int x, int y);
   void onMouseButtonDown(int button, int x, int y);
 
   void onKeyDown(int keyCode);
+  void quit();
 
 private:
+  vector<DataObject> data_object;
   int SPEED = 10;
   bool dragging = false;
 

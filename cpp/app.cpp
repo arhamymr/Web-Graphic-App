@@ -36,7 +36,7 @@ App::App()
   SDL_RenderClear(renderer);
 }
 
-void App::main_loop()
+void App::mainLoop()
 {
 
   bool running = true;
@@ -80,6 +80,20 @@ void App::main_loop()
 
     // Render the object
     SDL_RenderFillRect(renderer, &renderQuadCanvas);
+
+    // generate red box
+    ObjectItem obj(renderer, &data_object);
+    data_object.push_back({
+        "#2d2d2d",
+        1,
+        50,
+        50,
+        100,
+        100,
+    });
+
+    obj.draw_object();
+
     // Update screen
     SDL_RenderPresent(renderer);
 
@@ -98,6 +112,15 @@ void App::onMouseButtonDown(int button, int x, int y)
   if (button == SDL_BUTTON_LEFT)
   {
     cout << "clicked left" << x << "-" << y << endl;
+    data_object.push_back(
+        {
+            "#2d2dab",
+            1,
+            static_cast<int>((x - camera.x) * canvas_zoom),
+            static_cast<int>((y - camera.y) * canvas_zoom),
+            static_cast<int>(200 * canvas_zoom),
+            static_cast<int>(200 * canvas_zoom),
+        });
   }
   else if (button == SDL_BUTTON_RIGHT)
   {
@@ -128,4 +151,14 @@ void App::onKeyDown(int keyCode)
     canvas_zoom /= 1.1f;
     break;
   }
+  // Update screen
+  SDL_RenderPresent(renderer);
+}
+
+void App::quit()
+{
+  // quit sdl properly
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
 }
