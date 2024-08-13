@@ -29,9 +29,16 @@ App::App()
     return;
   }
 
-  // default canvas
-  canvas = {10, 10, 500, 600};
-  // Set the draw color to gray (RGB: 128, 128, 128)
+  width = 300;
+  height = 300;
+
+  canvas = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+  if (!canvas)
+  {
+    printf("Failed to create texture: %s\n", SDL_GetError());
+    return;
+  }
+
   SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
   SDL_RenderClear(renderer);
 }
@@ -64,22 +71,23 @@ void App::mainLoop()
       }
     }
 
-    // Set the draw color to gray (RGB: 128, 128, 128)
-    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-    SDL_RenderClear(renderer); // Clear the screen with white color
+    // Set the texture as the render target
+    SDL_SetRenderTarget(renderer, canvas);
 
-    // Set the drawing color to red for the object
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    // Clear the texture with a white color
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
 
-    // Adjust the object's position based on the camera position and zoom
-    SDL_Rect renderQuadCanvas = {
-        static_cast<int>((canvas.x - camera.x) * canvas_zoom),
-        static_cast<int>((canvas.y - camera.y) * canvas_zoom),
-        static_cast<int>(canvas.w * canvas_zoom),
-        static_cast<int>(canvas.h * canvas_zoom)};
+    // Draw a red rectangle on the texture
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_Rect rect = {50, 50, 400, 300};
+    SDL_RenderFillRect(renderer, &rect);
 
-    // Render the object
-    SDL_RenderFillRect(renderer, &renderQuadCanvas);
+    // Reset the render target to the default render target (the window)
+    SDL_SetRenderTarget(renderer, NULL);
+
+    // Copy the texture to the window renderer
+    SDL_RenderCopy(renderer, canvas, NULL, NULL);
 
     // generate red box
     ObjectItem obj(renderer, &data_object);
@@ -93,7 +101,6 @@ void App::mainLoop()
     });
 
     obj.draw_object();
-
     // Update screen
     SDL_RenderPresent(renderer);
 
@@ -105,6 +112,8 @@ void App::mainLoop()
 void App::onMouseMotion(int x, int y)
 {
   cout << "mouse move" << x << "-" << y << endl;
+  mouseX = x;
+  mouseY = y;
 }
 
 void App::onMouseButtonDown(int button, int x, int y)
@@ -112,20 +121,16 @@ void App::onMouseButtonDown(int button, int x, int y)
   if (button == SDL_BUTTON_LEFT)
   {
     cout << "clicked left" << x << "-" << y << endl;
-    data_object.push_back(
-        {
-            "#2d2dab",
-            1,
-            static_cast<int>((x - camera.x) * canvas_zoom),
-            static_cast<int>((y - camera.y) * canvas_zoom),
-            static_cast<int>(200 * canvas_zoom),
-            static_cast<int>(200 * canvas_zoom),
-        });
   }
   else if (button == SDL_BUTTON_RIGHT)
   {
     cout << "clicked right" << x << "-" << y << endl;
   }
+}
+
+void App::renderCanvas()
+{
+  // todo
 }
 
 void App::onKeyDown(int keyCode)
@@ -150,6 +155,17 @@ void App::onKeyDown(int keyCode)
   case SDLK_RIGHTBRACKET:
     canvas_zoom /= 1.1f;
     break;
+  case SDLK_a:
+    data_object.push_back(
+        {
+            "#2d2dab",
+            1,
+            mouseX,
+            mouseY,
+            200,
+            200,
+        });
+    break;
   }
   // Update screen
   SDL_RenderPresent(renderer);
@@ -157,6 +173,7 @@ void App::onKeyDown(int keyCode)
 
 void App::quit()
 {
+
   // quit sdl properly
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);

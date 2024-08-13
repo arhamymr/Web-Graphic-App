@@ -8,8 +8,8 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 900;
 
 class App
 {
@@ -18,7 +18,7 @@ public:
   void mainLoop();
   void onMouseMotion(int x, int y);
   void onMouseButtonDown(int button, int x, int y);
-
+  void renderCanvas();
   void onKeyDown(int keyCode);
   void quit();
 
@@ -30,9 +30,15 @@ private:
   SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
   float canvas_zoom = 1.0f;
 
-  SDL_Rect canvas = {};
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
+
+  int width;
+  int height;
+  SDL_Texture *canvas = nullptr;
+
+  int mouseX = 0;
+  int mouseY = 0;
 };
 
 #endif // APP_HPP
