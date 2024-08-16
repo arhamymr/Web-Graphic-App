@@ -5,29 +5,32 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cairo.h>
 #include <SDL.h>
 
 using namespace std;
 
 struct DataObject
 {
+
   string hexColor;
+
   int id, x, y, width, height;
+  // int type;
+  // bool isDragging;
 };
 
 class ObjectItem
 {
 public:
-  ObjectItem(SDL_Renderer *renderer, vector<DataObject> *data);
+  ObjectItem(cairo_t *cr, vector<DataObject> *data);
   void draw_object();
-  void hexToRGB(const string &hex, Uint8 &r, Uint8 &g, Uint8 &b);
+  void hexToRGB(const string &hex, double &r, double &g, double &b);
 
 private:
   vector<DataObject> *data_object;
-  int type;
-  int id;
-  bool dragging = false;
   SDL_Renderer *renderer = nullptr;
+  cairo_t *cr = nullptr;
 };
 
 #endif // OBJECT_ITEM_HPP

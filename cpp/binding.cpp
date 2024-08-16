@@ -7,6 +7,7 @@ EMSCRIPTEN_BINDINGS(app_class)
 {
   class_<App>("App")
       .constructor<>()
-      .function("main_loop", &App::main_loop)
-      .function("draw", &App::draw);
+      .function("main_loop", &App::mainLoop)
+      .function("draw", &App::renderCanvcas);
+
 }
