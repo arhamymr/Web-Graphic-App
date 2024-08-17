@@ -6,6 +6,10 @@
 #include <iostream>
 #include "object_item.hpp"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 using namespace std;
 
 const int SCREEN_WIDTH = 1200;
@@ -15,21 +19,35 @@ class App
 {
 public:
   App();
+
+  static void loopWrapperForEmscripten();
+  void appLoop();
   void mainLoop();
+  void appEvents();
+  void quit();
+
+  // input
   void onMouseMotion(int x, int y);
   void onMouseButtonDown(int button, int x, int y);
   void onMouseButtonUp(int button, int x, int y);
+
+  void onKeyDown(int keyCode);
+
+  // aid
+  void drawSelectRect();
+  void drawDottedRect(const SDL_Rect &rect, int dotSpacing);
   void renderCanvas();
   void drawBackgroundGrid();
-  void onKeyDown(int keyCode);
+
+  // helpers
   void printVectorData(const DataObject &obj);
-  void quit();
 
 private:
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
   SDL_Texture *texture = nullptr;
-  SDL_Surface *surface = nullptr;
+  ObjectItem *obj;
+  bool isRunning = true;
 
   vector<DataObject> data_object;
   int SPEED = 10;

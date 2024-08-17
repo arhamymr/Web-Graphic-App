@@ -1,5 +1,7 @@
 #include "app.hpp"
 
+static App *instance = nullptr;
+
 App::App()
 {
 
@@ -27,72 +29,72 @@ App::App()
     SDL_Quit();
     return;
   }
+
+  obj = new ObjectItem(renderer, &data_object);
+
+  instance = this;
+}
+
+void App::appEvents()
+{
+  SDL_Event event;
+  while (SDL_PollEvent(&event))
+  {
+    switch (event.type)
+    {
+    case SDL_QUIT:
+      isRunning = false;
+      break;
+    case SDL_KEYDOWN:
+      onKeyDown(event.key.keysym.sym);
+      break;
+    case SDL_MOUSEMOTION:
+      onMouseMotion(event.motion.x, event.motion.y);
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      onMouseButtonDown(event.button.button, event.button.x, event.button.y);
+      break;
+    case SDL_MOUSEBUTTONUP:
+      dragging = false;
+      onMouseButtonUp(event.button.button, event.button.x, event.button.y);
+      break;
+    }
+  }
+}
+
+void App::appLoop()
+{
+  appEvents();
+  // Clear the screen
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderClear(renderer);
+
+  obj->draw_object();
+  drawSelectRect();
+
+  SDL_RenderPresent(renderer);
+}
+
+void App::loopWrapperForEmscripten()
+{
+  instance->appLoop();
 }
 
 void App::mainLoop()
 {
 
-  bool running = true;
-
-  SDL_Event event;
-
+#ifdef __EMSCRIPTEN__
+  emscripten_set_main_loop(App::loopWrapperForEmscripten, 0, 1);
+#else
   // init object item
-  ObjectItem obj(renderer, &data_object);
-
-  while (running)
+  while (isRunning)
   {
-    while (SDL_PollEvent(&event))
-    {
-      switch (event.type)
-      {
-      case SDL_QUIT:
-        running = false;
-        break;
-      case SDL_KEYDOWN:
-        onKeyDown(event.key.keysym.sym);
-        break;
-      case SDL_MOUSEMOTION:
-        onMouseMotion(event.motion.x, event.motion.y);
-        break;
-      case SDL_MOUSEBUTTONDOWN:
-        onMouseButtonDown(event.button.button, event.button.x, event.button.y);
-        break;
-      case SDL_MOUSEBUTTONUP:
-        dragging = false;
-        onMouseButtonUp(event.button.button, event.button.x, event.button.y);
-        break;
-      }
-    }
-
-    // Clear the screen
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-
-    obj.draw_object();
-
-    if (isSelecting)
-    {
-      int x1 = mouseDownX, y1 = mouseDownY;
-      int x2 = mouseMoveX, y2 = mouseMoveY;
-      int width = x2 - x1;
-      int height = y2 - y1;
-
-      SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-      selectRect.x = x1;
-      selectRect.y = y1;
-      selectRect.w = width;
-      selectRect.h = height;
-
-      // Draw the rectangle
-      SDL_RenderDrawRect(renderer, &selectRect);
-    }
-
-    SDL_RenderPresent(renderer);
+    appLoop();
 
     // Delay to limit frame rate
     SDL_Delay(60);
   }
+#endif
 }
 
 void App::onMouseMotion(int x, int y)
@@ -133,6 +135,7 @@ void App::onMouseButtonUp(int button, int x, int y)
   int width = x2 - x1;
   int height = y2 - y1;
 
+  printf("inside x1: %d, y1: %d, x2: %d, y2: %d, width: %d, height: %d\n", x1, y1, x2, y2, width, height);
   // Draw rectangle
   data_object.push_back(
       {
@@ -215,4 +218,46 @@ void App::quit()
 void App::drawBackgroundGrid()
 {
   // todo
+}
+
+void App::drawDottedRect(const SDL_Rect &rect, int dotSpacing)
+{
+  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Set the color for the dots
+
+  // Draw top and bottom edges
+  for (int x = rect.x; x < rect.x + rect.w; x += dotSpacing)
+  {
+    SDL_RenderDrawPoint(renderer, x, rect.y);              // Top edge
+    SDL_RenderDrawPoint(renderer, x, rect.y + rect.h - 1); // Bottom edge
+  }
+
+  // Draw left and right edges
+  for (int y = rect.y; y < rect.y + rect.h; y += dotSpacing)
+  {
+    SDL_RenderDrawPoint(renderer, rect.x, y);              // Left edge
+    SDL_RenderDrawPoint(renderer, rect.x + rect.w - 1, y); // Right edge
+  }
+}
+
+void App::drawSelectRect()
+{
+  if (isSelecting)
+  {
+    int x1 = mouseDownX, y1 = mouseDownY;
+    int x2 = mouseMoveX, y2 = mouseMoveY;
+
+    int width = x2 - x1;
+    int height = y2 - y1;
+
+    printf("x1: %d, y1: %d, x2: %d, y2: %d, width: %d, height: %d\n", x1, y1, x2, y2, width, height);
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+    selectRect.x = x1;
+    selectRect.y = y1;
+    selectRect.w = width;
+    selectRect.h = height;
+
+    drawDottedRect(selectRect, 5);
+  }
 }

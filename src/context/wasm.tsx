@@ -30,8 +30,7 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
       instance.canvas = document.getElementById('canvas');
       const myModule = new instance.App();
 
-      myModule.draw();
-      myModule.main_loop();
+      myModule.mainLoop();
       setModule(myModule);
     } catch (error) {
       console.error(error);
