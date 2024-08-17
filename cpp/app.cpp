@@ -27,46 +27,6 @@ App::App()
     SDL_Quit();
     return;
   }
-
-  surface = SDL_CreateRGBSurface(
-      0,
-      SCREEN_WIDTH,
-      SCREEN_HEIGHT, 32,
-      0x00FF0000, /* Rmask */
-      0x0000FF00, /* Gmask */
-      0x000000FF, /* Bmask */
-      0);         /* Amask */
-
-  texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-  SDL_LockSurface(surface);
-
-  cairo_surface = cairo_image_surface_create_for_data((unsigned char *)surface->pixels, CAIRO_FORMAT_RGB24, surface->w, surface->h, surface->pitch);
-
-  if (cairo_surface == nullptr)
-  {
-    printf("cairo_image_surface_create_for_data Error: %s\n", SDL_GetError());
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return;
-  }
-
-  cr = cairo_create(cairo_surface);
-
-  if (cairo_status(cr) != CAIRO_STATUS_SUCCESS)
-  {
-    printf("cairo_create Error: %s\n", SDL_GetError());
-    cairo_surface_destroy(cairo_surface);
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return;
-  }
-
-  SDL_UnlockSurface(surface);
 }
 
 void App::mainLoop()
@@ -76,10 +36,8 @@ void App::mainLoop()
 
   SDL_Event event;
 
-  // White background with cairo API
-  cairo_set_source_rgba(cr, 1, 1, 1, 1.0);
-  cairo_rectangle(cr, 0, 0, surface->w, surface->h);
-  cairo_fill(cr);
+  // init object item
+  ObjectItem obj(renderer, &data_object);
 
   while (running)
   {
@@ -99,43 +57,68 @@ void App::mainLoop()
       case SDL_MOUSEBUTTONDOWN:
         onMouseButtonDown(event.button.button, event.button.x, event.button.y);
         break;
+      case SDL_MOUSEBUTTONUP:
+        dragging = false;
+        onMouseButtonUp(event.button.button, event.button.x, event.button.y);
+        break;
       }
     }
 
-    // // Clear the texture with a white color
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // SDL_RenderClear(renderer);
-
-    // // generate red box
-    ObjectItem obj(cr, &data_object);
+    // Clear the screen
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
 
     obj.draw_object();
-    // Update screen
 
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (isSelecting)
+    {
+      int x1 = mouseDownX, y1 = mouseDownY;
+      int x2 = mouseMoveX, y2 = mouseMoveY;
+      int width = x2 - x1;
+      int height = y2 - y1;
 
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+      SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+      selectRect.x = x1;
+      selectRect.y = y1;
+      selectRect.w = width;
+      selectRect.h = height;
+
+      // Draw the rectangle
+      SDL_RenderDrawRect(renderer, &selectRect);
+    }
+
     SDL_RenderPresent(renderer);
 
     // Delay to limit frame rate
-    SDL_Delay(60); // Approximately 60 frames per second
+    SDL_Delay(60);
   }
 }
 
 void App::onMouseMotion(int x, int y)
 {
   cout << "mouse move" << x << "-" << y << endl;
-  mouseX = x;
-  mouseY = y;
+  mouseMoveX = x;
+  mouseMoveY = y;
 
-  for (const auto &data : data_object)
-  {
-    printVectorData(data);
-  }
+  // for (const auto &data : data_object)
+  // {
+  //   printVectorData(data);
+  // }
 }
 
 void App::onMouseButtonDown(int button, int x, int y)
 {
+  mouseDownX = x;
+  mouseDownY = y;
+
+  isSelecting = true;
+}
+
+void App::onMouseButtonUp(int button, int x, int y)
+{
+  mouseUpX = x;
+  mouseUpY = y;
   if (button == SDL_BUTTON_LEFT)
   {
     cout << "clicked left" << x << "-" << y << endl;
@@ -144,6 +127,24 @@ void App::onMouseButtonDown(int button, int x, int y)
   {
     cout << "clicked right" << x << "-" << y << endl;
   }
+
+  int x1 = mouseDownX, y1 = mouseDownY;
+  int x2 = mouseUpX, y2 = mouseUpY;
+  int width = x2 - x1;
+  int height = y2 - y1;
+
+  // Draw rectangle
+  data_object.push_back(
+      {
+          "#2d2d2d",
+          1,
+          mouseDownX,
+          mouseDownY,
+          width,
+          height,
+      });
+
+  isSelecting = false;
 }
 
 void App::renderCanvas()
@@ -178,8 +179,8 @@ void App::onKeyDown(int keyCode)
         {
             "#2d2d2d",
             1,
-            mouseX,
-            mouseY,
+            mouseMoveX,
+            mouseMoveY,
             200,
             200,
         });
@@ -202,11 +203,6 @@ void App::printVectorData(const DataObject &obj)
 
 void App::quit()
 {
-
-  if (cr)
-    cairo_destroy(cr);
-  if (cairo_surface)
-    cairo_surface_destroy(cairo_surface);
   if (texture)
     SDL_DestroyTexture(texture);
   if (renderer)
@@ -214,4 +210,9 @@ void App::quit()
   if (window)
     SDL_DestroyWindow(window);
   SDL_Quit();
+}
+
+void App::drawBackgroundGrid()
+{
+  // todo
 }

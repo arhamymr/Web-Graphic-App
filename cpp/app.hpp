@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <iostream>
-#include <cairo.h>
 #include "object_item.hpp"
 
 using namespace std;
@@ -19,7 +18,9 @@ public:
   void mainLoop();
   void onMouseMotion(int x, int y);
   void onMouseButtonDown(int button, int x, int y);
+  void onMouseButtonUp(int button, int x, int y);
   void renderCanvas();
+  void drawBackgroundGrid();
   void onKeyDown(int keyCode);
   void printVectorData(const DataObject &obj);
   void quit();
@@ -29,8 +30,6 @@ private:
   SDL_Renderer *renderer = nullptr;
   SDL_Texture *texture = nullptr;
   SDL_Surface *surface = nullptr;
-  cairo_surface_t *cairo_surface = nullptr;
-  cairo_t *cr = nullptr;
 
   vector<DataObject> data_object;
   int SPEED = 10;
@@ -40,8 +39,16 @@ private:
   float canvas_zoom = 1.0f;
 
   // current mouse position
-  int mouseX = 0;
-  int mouseY = 0;
+  int mouseMoveX = 0;
+  int mouseMoveY = 0;
+  int mouseUpX = 0;
+  int mouseUpY = 0;
+  int mouseDownX = 0;
+  int mouseDownY = 0;
+
+  // select aid
+  SDL_Rect selectRect = {0, 0, 0, 0};
+  bool isSelecting = false;
 };
 
 #endif // APP_HPP

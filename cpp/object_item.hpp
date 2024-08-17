@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <cairo.h>
 #include <SDL.h>
 
 using namespace std;
@@ -23,14 +22,13 @@ struct DataObject
 class ObjectItem
 {
 public:
-  ObjectItem(cairo_t *cr, vector<DataObject> *data);
+  ObjectItem(SDL_Renderer *renderer, vector<DataObject> *data);
   void draw_object();
-  void hexToRGB(const string &hex, double &r, double &g, double &b);
+  void hexToRGB(const string &hex, int &r, int &g, int &b);
 
 private:
   vector<DataObject> *data_object;
   SDL_Renderer *renderer = nullptr;
-  cairo_t *cr = nullptr;
 };
 
 #endif // OBJECT_ITEM_HPP
