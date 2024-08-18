@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface WasmContextProps {
   module: any;
-  loadWasm: () => void;
 }
 
 const WasmContext = createContext<WasmContextProps | undefined>(undefined);
@@ -18,14 +17,15 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
     w: 0,
     h: 0,
   });
+
   const loadWasm = async () => {
     try {
       const loadmodule = await import('@/wasm/main.js');
       const instance = await loadmodule.default();
       instance.canvas = document.getElementById('canvas');
       const myModule = new instance.App(screen.w, screen.h);
-      myModule.mainLoop();
       setModule(myModule);
+      myModule.mainLoop();
     } catch (error) {
       console.error(error);
     } finally {
@@ -58,7 +58,7 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
             width={screen.w}
             height={screen.h}
           ></canvas>
-          <WasmContext.Provider value={{ module, loadWasm }}>
+          <WasmContext.Provider value={{ module }}>
             {children}
           </WasmContext.Provider>
         </div>
@@ -67,8 +67,9 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useWasmContext = () => {
+export const useWasmContext = (): any => {
   const context = useContext(WasmContext);
+  console.log(context, 'context');
   if (context === undefined) {
     throw new Error('useWasmContext must be used within a MyProvider');
   }

@@ -21,13 +21,18 @@ public:
   void appLoop();
   void mainLoop();
   void appEvents();
+  void pause();
+  void resume();
   void quit();
+
+  // color
+  void setSelectFillColor(string color);
+  void setSelectStrokeColor(string color);
 
   // input
   void onMouseMotion(int x, int y);
   void onMouseButtonDown(int button, int x, int y);
   void onMouseButtonUp(int button, int x, int y);
-
   void onKeyDown(int keyCode);
 
   // aid
@@ -67,6 +72,10 @@ private:
   // select aid
   SDL_Rect selectRect = {0, 0, 0, 0};
   bool isSelecting = false;
+
+  // color
+  string selectFillColor = "#000000";
+  string selectStrokeColor = "#000000";
 };
 
 #endif // APP_HPP

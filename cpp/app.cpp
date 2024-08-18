@@ -35,6 +35,18 @@ App::App(int width, int height) : screen_width(width), screen_height(height)
   instance = this;
 }
 
+void App::pause()
+{
+  printf("pause\n");
+  emscripten_pause_main_loop();
+}
+
+void App::resume()
+{
+  printf("resume\n");
+  emscripten_resume_main_loop();
+}
+
 void App::appEvents()
 {
   SDL_Event event;
@@ -82,19 +94,7 @@ void App::loopWrapperForEmscripten()
 
 void App::mainLoop()
 {
-
-#ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(App::loopWrapperForEmscripten, 0, 1);
-#else
-  // init object item
-  while (isRunning)
-  {
-    appLoop();
-
-    // Delay to limit frame rate
-    SDL_Delay(60);
-  }
-#endif
 }
 
 void App::onMouseMotion(int x, int y)
@@ -107,6 +107,17 @@ void App::onMouseMotion(int x, int y)
   // {
   //   printVectorData(data);
   // }
+}
+
+// COLOR
+void App::setSelectFillColor(string color)
+{
+  selectFillColor = color;
+}
+
+void App::setSelectStrokeColor(string color)
+{
+  selectStrokeColor = color;
 }
 
 void App::onMouseButtonDown(int button, int x, int y)

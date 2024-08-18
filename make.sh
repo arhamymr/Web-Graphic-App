@@ -20,6 +20,8 @@ emcc cpp/app.cpp cpp/object_item.cpp cpp/binding.cpp -o ${OUTPUT_JS} \
   -s 'EXPORT_NAME="myModule"' \
   -s 'ENVIRONMENT="web"' \
   -s USE_SDL=2 \
+  -s ALLOW_MEMORY_GROWTH=1 \
+  -s MIN_SAFARI_VERSION=-1 \
   -Wall -g\
   --bind 
 
