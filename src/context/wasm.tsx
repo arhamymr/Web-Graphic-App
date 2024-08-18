@@ -1,13 +1,6 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
-import Script from 'next/script';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface WasmContextProps {
   module: any;
@@ -19,17 +12,17 @@ const WasmContext = createContext<WasmContextProps | undefined>(undefined);
 export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const SCREEN_WIDTH = window.innerWidth;
+  const SCREEN_HEIGHT = window.innerHeight;
+
   const [module, setModule] = useState<any>(null);
 
   const loadWasm = async () => {
     try {
       const loadmodule = await import('@/wasm/main.js');
-      console.log(loadmodule, 'loadmodule');
       const instance = await loadmodule.default();
-      console.log(instance);
       instance.canvas = document.getElementById('canvas');
-      const myModule = new instance.App();
-
+      const myModule = new instance.App(SCREEN_HEIGHT, SCREEN_WIDTH);
       myModule.mainLoop();
       setModule(myModule);
     } catch (error) {
@@ -40,14 +33,18 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     loadWasm();
   }, []);
-
   return (
-    <>
+    <div className="bg-black w-full">
+      <canvas
+        id="canvas"
+        className="w-full"
+        width={SCREEN_WIDTH}
+        height={SCREEN_HEIGHT}
+      ></canvas>
       <WasmContext.Provider value={{ module, loadWasm }}>
-        <canvas id="canvas" width="640" height="480"></canvas>
         {children}
       </WasmContext.Provider>
-    </>
+    </div>
   );
 };
 

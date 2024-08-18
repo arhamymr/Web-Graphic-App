@@ -2,7 +2,7 @@
 
 static App *instance = nullptr;
 
-App::App()
+App::App(int width, int height) : screen_width(width), screen_height(height)
 {
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -12,7 +12,7 @@ App::App()
   }
   window = SDL_CreateWindow("Canvas",
                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                            screen_width, screen_height,
                             SDL_WINDOW_SHOWN);
   if (window == nullptr)
   {
@@ -139,7 +139,7 @@ void App::onMouseButtonUp(int button, int x, int y)
   // Draw rectangle
   data_object.push_back(
       {
-          "#2d2d2d",
+          obj->randomColor(),
           1,
           mouseDownX,
           mouseDownY,

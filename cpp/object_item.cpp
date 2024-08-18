@@ -42,3 +42,14 @@ void ObjectItem::hexToRGB(const std::string &hex, int &r, int &g, int &b)
     throw std::invalid_argument("Invalid hex color format");
   }
 }
+
+string ObjectItem::randomColor()
+{
+  string hexColor = "#";
+  for (int i = 0; i < 6; i++)
+  {
+    hexColor += "0123456789ABCDEF"[rand() % 16];
+  }
+
+  return hexColor;
+}

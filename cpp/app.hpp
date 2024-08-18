@@ -12,13 +12,10 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 1200;
-const int SCREEN_HEIGHT = 900;
-
 class App
 {
 public:
-  App();
+  App(int width, int height);
 
   static void loopWrapperForEmscripten();
   void appLoop();
@@ -43,6 +40,9 @@ public:
   void printVectorData(const DataObject &obj);
 
 private:
+  int screen_width = 1200;
+  int screen_height = 900;
+
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
   SDL_Texture *texture = nullptr;
@@ -53,7 +53,7 @@ private:
   int SPEED = 10;
   bool dragging = false;
 
-  SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+  SDL_Rect camera = {0, 0, screen_width, screen_height};
   float canvas_zoom = 1.0f;
 
   // current mouse position

@@ -2,7 +2,7 @@
 
 int main()
 {
-  App app;
+  App app(200, 220);
   app.mainLoop();
 
   app.quit();

@@ -25,6 +25,7 @@ public:
   ObjectItem(SDL_Renderer *renderer, vector<DataObject> *data);
   void draw_object();
   void hexToRGB(const string &hex, int &r, int &g, int &b);
+  string randomColor();
 
 private:
   vector<DataObject> *data_object;
