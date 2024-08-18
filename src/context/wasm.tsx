@@ -33,8 +33,9 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     loadWasm();
   }, []);
+
   return (
-    <div className="bg-black w-full">
+    <div className="bg-black w-full h-full">
       <canvas
         id="canvas"
         className="w-full"
