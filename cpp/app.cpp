@@ -103,10 +103,7 @@ void App::onMouseMotion(int x, int y)
   mouseMoveX = x;
   mouseMoveY = y;
 
-  // for (const auto &data : data_object)
-  // {
-  //   printVectorData(data);
-  // }
+  drawLine(mouseDownX, mouseDownY, x, y, "#000000");
 }
 
 // COLOR
@@ -126,6 +123,10 @@ void App::onMouseButtonDown(int button, int x, int y)
   mouseDownY = y;
 
   isSelecting = true;
+  if (button == SDL_BUTTON_LEFT)
+  {
+    isDrawline = true;
+  }
 }
 
 void App::onMouseButtonUp(int button, int x, int y)
@@ -138,7 +139,7 @@ void App::onMouseButtonUp(int button, int x, int y)
   }
   else if (button == SDL_BUTTON_RIGHT)
   {
-    cout << "clicked right" << x << "-" << y << endl;
+    isDrawline = false;
   }
 
   int x1 = mouseDownX, y1 = mouseDownY;
@@ -164,6 +165,13 @@ void App::onMouseButtonUp(int button, int x, int y)
 void App::renderCanvas()
 {
   // todo
+}
+
+void App::drawLine(int x1, int y1, int x2, int y2, string color)
+{
+  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red color
+  SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Reset to black
 }
 
 void App::onKeyDown(int keyCode)

@@ -25,6 +25,9 @@ public:
   void resume();
   void quit();
 
+  // draw
+  void drawLine(int x1, int y1, int x2, int y2, string color);
+
   // color
   void setSelectFillColor(string color);
   void setSelectStrokeColor(string color);
@@ -72,6 +75,7 @@ private:
   // select aid
   SDL_Rect selectRect = {0, 0, 0, 0};
   bool isSelecting = false;
+  bool isDrawline = false;
 
   // color
   string selectFillColor = "#000000";
