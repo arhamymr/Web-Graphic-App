@@ -48,9 +48,6 @@ public:
   void printVectorData(const DataObject &obj);
 
 private:
-  int screen_width = 1200;
-  int screen_height = 900;
-
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
   SDL_Texture *texture = nullptr;
@@ -58,11 +55,7 @@ private:
   bool isRunning = true;
 
   vector<DataObject> data_object;
-  int SPEED = 10;
   bool dragging = false;
-
-  SDL_Rect camera = {0, 0, screen_width, screen_height};
-  float canvas_zoom = 1.0f;
 
   // current mouse position
   int mouseMoveX = 0;

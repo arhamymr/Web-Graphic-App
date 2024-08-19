@@ -2,7 +2,7 @@
 
 static App *instance = nullptr;
 
-App::App(int width, int height) : screen_width(width), screen_height(height)
+App::App(int width, int height)
 {
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -12,7 +12,7 @@ App::App(int width, int height) : screen_width(width), screen_height(height)
   }
   window = SDL_CreateWindow("Canvas",
                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                            screen_width, screen_height,
+                            width, height,
                             SDL_WINDOW_SHOWN);
   if (window == nullptr)
   {
@@ -178,24 +178,6 @@ void App::onKeyDown(int keyCode)
 {
   switch (keyCode)
   {
-  case SDLK_UP:
-    camera.y -= SPEED;
-    break;
-  case SDLK_DOWN:
-    camera.y += SPEED;
-    break;
-  case SDLK_LEFT:
-    camera.x -= SPEED;
-    break;
-  case SDLK_RIGHT:
-    camera.x += SPEED;
-    break;
-  case SDLK_LEFTBRACKET:
-    canvas_zoom *= 1.1f;
-    break;
-  case SDLK_RIGHTBRACKET:
-    canvas_zoom /= 1.1f;
-    break;
   case SDLK_a:
     data_object.push_back(
         {
