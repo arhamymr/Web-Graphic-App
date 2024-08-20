@@ -40,6 +40,7 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
       const myModule = new instance.App(screen.w, screen.h);
       setModule(myModule);
       myModule.mainLoop();
+      instance.delete();
     } catch (error) {
       console.error(error);
     } finally {

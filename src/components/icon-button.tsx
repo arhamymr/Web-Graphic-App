@@ -1,24 +1,20 @@
 import React from 'react';
-import { IconButton as IconBtn } from '@chakra-ui/react';
+import { Icon } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
 interface IconButtonProps {
-  icon: React.ReactElement<any>;
+  icon: IconType;
   onClick?: (val: any) => void;
-  disabled?: boolean;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({
-  icon,
-  onClick,
-  disabled = false,
-}) => {
+const IconButton: React.FC<IconButtonProps> = ({ icon, onClick }) => {
   return (
-    <IconBtn
-      variant="outline"
+    <Icon
+      cursor={'pointer'}
+      w={6}
+      h={6}
+      as={icon}
       aria-label={'button'}
       onClick={onClick}
-      size="sm"
-      disabled={disabled}
-      icon={icon}
     />
   );
 };

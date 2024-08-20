@@ -1,13 +1,19 @@
 import React from 'react';
 import IconButton from './icon-button';
-import { BiSquare, BiPencil, BiImageAdd, BiGrid } from 'react-icons/bi';
+import {
+  BiSquare,
+  BiPencil,
+  BiImageAdd,
+  BiGrid,
+  BiPointer,
+} from 'react-icons/bi';
 import { ColorIndicator, SwatchesPickerButton } from './color-picker';
 import { useWasmContext } from '@/context/wasm';
 import { Box, Card, Center, Flex } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
 interface ToolbarProps {
-  icon: React.ReactElement<any>;
+  icon: IconType;
   onClick: () => void;
-  disabled?: boolean;
 }
 
 const Toolbar: React.FC = () => {
@@ -15,19 +21,25 @@ const Toolbar: React.FC = () => {
 
   const buttons: ToolbarProps[] = [
     {
-      icon: <BiPencil />,
+      icon: BiPointer,
+      onClick: () => {
+        alert('pointer');
+      },
+    },
+    {
+      icon: BiPencil,
       onClick: () => {
         module.pause();
       },
     },
     {
-      icon: <BiSquare />,
+      icon: BiSquare,
       onClick: () => {
         module.resume();
       },
     },
     {
-      icon: <BiImageAdd />,
+      icon: BiImageAdd,
       onClick: () => {
         alert('World');
       },
@@ -43,7 +55,13 @@ const Toolbar: React.FC = () => {
     >
       <Flex gap={2} align={'center'}>
         <Card>
-          <Flex gap={1} px={4} py={2} border={'1px solid gray.200'}>
+          <Flex
+            align={'center'}
+            gap={2}
+            px={4}
+            py={2}
+            border={'1px solid gray.200'}
+          >
             {buttons.map((button, index) => (
               <IconButton
                 key={index}
