@@ -1,7 +1,15 @@
+'use client';
 import { WasmProvider } from '@/context/wasm';
 
-export const Provider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  return <WasmProvider>{children}</WasmProvider>;
-};
+import { CacheProvider } from '@chakra-ui/next-js';
+import { ChakraProvider } from '@chakra-ui/react';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <CacheProvider>
+      <ChakraProvider>
+        <WasmProvider>{children}</WasmProvider>;
+      </ChakraProvider>
+    </CacheProvider>
+  );
+}

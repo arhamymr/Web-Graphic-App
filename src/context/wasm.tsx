@@ -1,5 +1,6 @@
 'use client';
 
+import { Box, Center } from '@chakra-ui/react';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface WasmContextProps {
@@ -47,21 +48,21 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <>
       {isLoading ? (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="text-white">Loading...</div>
-        </div>
+        <Center>
+          <div>Loading...</div>
+        </Center>
       ) : (
-        <div className="bg-black w-full h-full">
-          <canvas
-            id="canvas"
-            className="w-full"
-            width={screen.w}
-            height={screen.h}
-          ></canvas>
+        <Box overflow={'hidden'} bg={'gray.500'} w={'full'} h={'full'}>
           <WasmContext.Provider value={{ module }}>
+            <canvas
+              id="canvas"
+              className="w-full"
+              width={screen.w}
+              height={screen.h}
+            ></canvas>
             {children}
           </WasmContext.Provider>
-        </div>
+        </Box>
       )}
     </>
   );

@@ -1,27 +1,66 @@
-import React from 'react';
-import { ChromePicker } from 'react-color';
+import React, { useEffect } from 'react';
+import { ChromePicker, SwatchesPicker } from 'react-color';
 import IconButton from './icon-button';
-import { BiPalette } from 'react-icons/bi';
-const ColorPicker = () => {
-  const [color, setColor] = React.useState('#fff');
-  const [showPicker, setShowPicker] = React.useState(false);
+import { BiPalette, BiGrid } from 'react-icons/bi';
+import { useWasmContext } from '@/context/wasm';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Button,
+  Flex,
+  Box,
+} from '@chakra-ui/react';
+
+export const ColorIndicator = () => {
+  const { module } = useWasmContext();
+
+  let fill = 'transparent';
+  let stroke = 'black';
+
+  useEffect(() => {
+    fill = module?.getSelectFillColor();
+    stroke = module?.getSelectStrokeColor();
+  }, [module]);
 
   return (
-    <div className="flex">
-      <IconButton
-        icon={<BiPalette size={'23px'} className="hover:text-primary" />}
-        onClick={() => setShowPicker(!showPicker)}
-      />
-      {showPicker && (
-        <div className="absolute bottom-12">
-          <ChromePicker
-            color={color}
-            onChangeComplete={(c) => setColor(c.hex)}
-          />
-        </div>
-      )}
-    </div>
+    <Box
+      rounded={'full'}
+      w={'40px'}
+      h={'40px'}
+      bg={fill}
+      border={`3px solid ${stroke}`}
+    />
   );
 };
 
-export default ColorPicker;
+export const SwatchesPickerButton = () => {
+  const { module } = useWasmContext();
+  const [color, setColor] = React.useState('#fff');
+
+  return (
+    <Popover placement="top-start">
+      <PopoverTrigger>
+        <Button size={'sm'}>Color</Button>
+      </PopoverTrigger>
+      <PopoverContent width={500} p={2}>
+        <Flex gap={2}>
+          <ChromePicker
+            color={color}
+            onChangeComplete={(c) => {
+              module.setSelectFillColor(c.hex);
+              setColor(c.hex);
+            }}
+          />
+          <SwatchesPicker
+            color={color}
+            onChangeComplete={(c) => {
+              module.setSelectFillColor(c.hex);
+              setColor(c.hex);
+            }}
+          />
+        </Flex>
+      </PopoverContent>
+    </Popover>
+  );
+};

@@ -11,5 +11,7 @@ EMSCRIPTEN_BINDINGS(app_class)
       .function("resume", &App::resume)
       .function("pause", &App::pause)
       .function("setSelectFillColor", &App::setSelectFillColor)
-      .function("setSelectStrokeColor", &App::setSelectStrokeColor);
+      .function("setSelectStrokeColor", &App::setSelectStrokeColor)
+      .function("getSelectFillColor", &App::getSelectFillColor)
+      .function("getSelectStrokeColor", &App::getSelectStrokeColor);
 }

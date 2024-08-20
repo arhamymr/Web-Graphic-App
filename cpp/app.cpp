@@ -117,6 +117,16 @@ void App::setSelectStrokeColor(string color)
   selectStrokeColor = color;
 }
 
+string App::getSelectFillColor()
+{
+  return selectFillColor;
+}
+
+string App::getSelectStrokeColor()
+{
+  return selectStrokeColor;
+}
+
 void App::onMouseButtonDown(int button, int x, int y)
 {
   mouseDownX = x;
@@ -181,7 +191,7 @@ void App::onKeyDown(int keyCode)
   case SDLK_a:
     data_object.push_back(
         {
-            "#2d2d2d",
+            selectFillColor,
             1,
             mouseMoveX,
             mouseMoveY,

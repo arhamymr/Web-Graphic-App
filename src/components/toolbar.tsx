@@ -1,33 +1,33 @@
 import React from 'react';
 import IconButton from './icon-button';
-import { BiSquare, BiPencil, BiImageAdd } from 'react-icons/bi';
-import ColorPicker from './color-picker';
+import { BiSquare, BiPencil, BiImageAdd, BiGrid } from 'react-icons/bi';
+import { ColorIndicator, SwatchesPickerButton } from './color-picker';
 import { useWasmContext } from '@/context/wasm';
+import { Box, Card, Center, Flex } from '@chakra-ui/react';
 interface ToolbarProps {
-  icon: React.ReactNode | string;
+  icon: React.ReactElement<any>;
   onClick: () => void;
   disabled?: boolean;
 }
 
 const Toolbar: React.FC = () => {
   const { module } = useWasmContext();
-  console.log(module, 'module context');
 
   const buttons: ToolbarProps[] = [
     {
-      icon: <BiPencil size={'24px'} className="hover:text-primary" />,
+      icon: <BiPencil />,
       onClick: () => {
         module.pause();
       },
     },
     {
-      icon: <BiSquare size={'24px'} className="hover:text-primary" />,
+      icon: <BiSquare />,
       onClick: () => {
         module.resume();
       },
     },
     {
-      icon: <BiImageAdd size={'24px'} className="hover:text-primary" />,
+      icon: <BiImageAdd />,
       onClick: () => {
         alert('World');
       },
@@ -35,13 +35,29 @@ const Toolbar: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white px-4 py-2 rounded absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-6 border">
-      {buttons.map((button, index) => (
-        <IconButton key={index} icon={button.icon} onClick={button.onClick} />
-      ))}
+    <Box
+      position="absolute"
+      bottom="20px"
+      left="50%"
+      transform="translate(-50%, -50%)"
+    >
+      <Flex gap={2} align={'center'}>
+        <Card>
+          <Flex gap={1} px={4} py={2} border={'1px solid gray.200'}>
+            {buttons.map((button, index) => (
+              <IconButton
+                key={index}
+                icon={button.icon}
+                onClick={button.onClick}
+              />
+            ))}
 
-      <ColorPicker />
-    </div>
+            <SwatchesPickerButton />
+          </Flex>
+        </Card>
+        <ColorIndicator />
+      </Flex>
+    </Box>
   );
 };
 

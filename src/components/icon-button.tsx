@@ -1,8 +1,8 @@
 import React from 'react';
-
+import { IconButton as IconBtn } from '@chakra-ui/react';
 interface IconButtonProps {
-  icon: React.ReactNode;
-  onClick: () => void;
+  icon: React.ReactElement<any>;
+  onClick?: (val: any) => void;
   disabled?: boolean;
 }
 
@@ -12,9 +12,14 @@ const IconButton: React.FC<IconButtonProps> = ({
   disabled = false,
 }) => {
   return (
-    <button onClick={onClick} disabled={disabled}>
-      {icon}
-    </button>
+    <IconBtn
+      variant="outline"
+      aria-label={'button'}
+      onClick={onClick}
+      size="sm"
+      disabled={disabled}
+      icon={icon}
+    />
   );
 };
 
