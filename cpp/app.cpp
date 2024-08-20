@@ -81,7 +81,7 @@ void App::appLoop()
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderClear(renderer);
 
-  obj->draw_object();
+  obj->drawObject();
   drawSelectRect();
 
   SDL_RenderPresent(renderer);
@@ -115,16 +115,6 @@ void App::setSelectFillColor(string color)
 void App::setSelectStrokeColor(string color)
 {
   selectStrokeColor = color;
-}
-
-string App::getSelectFillColor()
-{
-  return selectFillColor;
-}
-
-string App::getSelectStrokeColor()
-{
-  return selectStrokeColor;
 }
 
 void App::onMouseButtonDown(int button, int x, int y)
@@ -161,7 +151,7 @@ void App::onMouseButtonUp(int button, int x, int y)
   // Draw rectangle
   data_object.push_back(
       {
-          obj->randomColor(),
+          selectFillColor,
           1,
           mouseDownX,
           mouseDownY,

@@ -23,7 +23,7 @@ class ObjectItem
 {
 public:
   ObjectItem(SDL_Renderer *renderer, vector<DataObject> *data);
-  void draw_object();
+  void drawObject();
   void hexToRGB(const string &hex, int &r, int &g, int &b);
   string randomColor();
 

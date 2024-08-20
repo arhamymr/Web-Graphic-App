@@ -1,10 +1,21 @@
 'use client';
 
 import { Box, Center } from '@chakra-ui/react';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  Dispatch,
+} from 'react';
 
+type setColor = Dispatch<React.SetStateAction<string>>;
 interface WasmContextProps {
   module: any;
+  fill: string;
+  stroke: string;
+  setStroke: setColor;
+  setFill: setColor;
 }
 
 const WasmContext = createContext<WasmContextProps | undefined>(undefined);
@@ -18,6 +29,8 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
     w: 0,
     h: 0,
   });
+  const [fill, setFill] = useState<string>('#fff');
+  const [stroke, setStroke] = useState<string>('#000');
 
   const loadWasm = async () => {
     try {
@@ -53,7 +66,15 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
         </Center>
       ) : (
         <Box overflow={'hidden'} bg={'gray.500'} w={'full'} h={'full'}>
-          <WasmContext.Provider value={{ module }}>
+          <WasmContext.Provider
+            value={{
+              module,
+              fill,
+              stroke,
+              setFill,
+              setStroke,
+            }}
+          >
             <canvas
               id="canvas"
               className="w-full"

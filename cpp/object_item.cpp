@@ -6,7 +6,7 @@ ObjectItem::ObjectItem(SDL_Renderer *r, vector<DataObject> *d)
   data_object = d;
 }
 
-void ObjectItem::draw_object()
+void ObjectItem::drawObject()
 {
 
   for (const auto &obj : *data_object)

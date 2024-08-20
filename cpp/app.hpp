@@ -31,8 +31,6 @@ public:
   // color
   void setSelectFillColor(string color);
   void setSelectStrokeColor(string color);
-  string getSelectFillColor();
-  string getSelectStrokeColor();
 
   // input
   void onMouseMotion(int x, int y);

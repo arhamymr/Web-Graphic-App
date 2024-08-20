@@ -13,15 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 export const ColorIndicator = () => {
-  const { module } = useWasmContext();
-
-  let fill = 'transparent';
-  let stroke = 'black';
-
-  useEffect(() => {
-    fill = module?.getSelectFillColor();
-    stroke = module?.getSelectStrokeColor();
-  }, [module]);
+  const { fill, stroke } = useWasmContext();
 
   return (
     <Box
@@ -35,8 +27,7 @@ export const ColorIndicator = () => {
 };
 
 export const SwatchesPickerButton = () => {
-  const { module } = useWasmContext();
-  const [color, setColor] = React.useState('#fff');
+  const { module, setFill, fill } = useWasmContext();
 
   return (
     <Popover placement="top-start">
@@ -46,17 +37,17 @@ export const SwatchesPickerButton = () => {
       <PopoverContent width={500} p={2}>
         <Flex gap={2}>
           <ChromePicker
-            color={color}
+            color={fill}
             onChangeComplete={(c) => {
               module.setSelectFillColor(c.hex);
-              setColor(c.hex);
+              setFill(c.hex);
             }}
           />
           <SwatchesPicker
-            color={color}
+            color={fill}
             onChangeComplete={(c) => {
               module.setSelectFillColor(c.hex);
-              setColor(c.hex);
+              setFill(c.hex);
             }}
           />
         </Flex>
