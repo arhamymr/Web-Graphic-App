@@ -23,19 +23,19 @@ const Toolbar: React.FC = () => {
     {
       icon: BiPointer,
       onClick: () => {
-        alert('pointer');
+        module.activeSelect();
       },
     },
     {
       icon: BiPencil,
       onClick: () => {
-        module.pause();
+        module.activeDrawLine();
       },
     },
     {
       icon: BiSquare,
       onClick: () => {
-        module.resume();
+        module.activeDrawBox();
       },
     },
     {

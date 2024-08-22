@@ -30,8 +30,8 @@ App::App(int width, int height)
     return;
   }
 
-  obj = new ObjectItem(renderer, &data_object);
-
+  obj = new Object(renderer, &data_object);
+  colors = new Colors();
   instance = this;
 }
 
@@ -81,6 +81,70 @@ void App::appLoop()
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderClear(renderer);
 
+  // // Draw some shapes example for guide
+  // thickLineColor(renderer, 10, 10, 60, 60, 5, 0xFF0FFFF0);
+  // circleColor(renderer, 150, 40, 30, 0xFF00FF00);
+  // arcColor(renderer, 250, 40, 30, 45, 200, 0xFF0000FF);
+  // aacircleColor(renderer, 350, 40, 30, 0xFF00FF00);
+  // filledCircleColor(renderer, 450, 40, 30, 0xFF00FFFF);
+  // ellipseColor(renderer, 550, 40, 30, 10, 0xFF00FF00);
+  // aaellipseColor(renderer, 50, 140, 30, 10, 0xFF00FF00);
+  // filledEllipseColor(renderer, 150, 140, 30, 10, 0xFF00FF00);
+  // pieColor(renderer, 250, 140, 30, -45, 45, 0xFF00FF00);
+  // filledPieColor(renderer, 350, 140, 30, 45, -45, 0xFF00FF00);
+  // aatrigonColor(renderer, 400, 140, 480, 140, 440, 170, 0xFF0FF0FF);
+
+  // Sint16 ptx[] = {510, 590, 590, 550, 510};
+  // Sint16 pty[] = {130, 130, 180, 150, 180};
+  // aapolygonColor(renderer, ptx, pty, 5, 0xFF0F0F0F);
+
+  // rectangleColor(renderer, 20, 210, 90, 260, 0xFF000000);
+  // pixelColor(renderer, 150, 250, 0xFF0FA0A0);
+  // boxColor(renderer, 220, 210, 290, 260, 0xFFCFBFAF);
+
+  // characterColor(renderer, 350, 230, 'K', 0xFF0000FF);
+  // stringColor(renderer, 450, 230, "LiTi & sesajad", 0xFFAABBCC);
+
+  // // Draw filled and stroked rectangles
+  // // Filled rectangle
+  // boxColor(renderer, 320, 210, 390, 260, 0xFF00FF00);
+  // // Stroked rectangle
+  // rectangleColor(renderer, 320, 210, 390, 260, 0xFF000000);
+
+  int brushSize = 10;
+
+  // Draw lines between consecutive points using Bresenham's line algorithm
+  // Example line with brush stroke
+  // Example line with brush stroke
+
+  if (data_point.size() > 1)
+  {
+    for (int i = 0; i < data_point.size() - 1; i++)
+    {
+      // Set the drawing color (R, G, B, A)
+      aalineRGBA(renderer, data_point[i].x, data_point[i].y, data_point[i + 1].x, data_point[i + 1].y, 255, 0, 0, 255);
+    }
+  }
+  // // Draw filled and stroked circles
+  // // Filled circle
+  // filledCircleColor(renderer, 450, 300, 30, 0xFFFF0000);
+  // // Stroked circle
+  // circleColor(renderer, 450, 300, 30, 0xFF000000);
+
+  // Draw a white line
+  lineRGBA(renderer, 50, 50, 200, 200, 255, 255, 255, 255);
+
+  // Draw a green rectangle
+  rectangleRGBA(renderer, 300, 100, 400, 200, 0, 255, 0, 255);
+
+  // Draw a filled blue circle
+  filledCircleRGBA(renderer, 500, 300, 50, 0, 0, 255, 255);
+
+  // Draw a yellow polygon
+  Sint16 vx[4] = {100, 150, 200, 150};
+  Sint16 vy[4] = {300, 250, 300, 350};
+  filledPolygonRGBA(renderer, vx, vy, 4, 255, 255, 0, 255);
+
   obj->drawObject();
   drawSelectRect();
 
@@ -97,24 +161,20 @@ void App::mainLoop()
   emscripten_set_main_loop(App::loopWrapperForEmscripten, 0, 1);
 }
 
+// Function to draw a line using Bresenham's line algorithm
 void App::onMouseMotion(int x, int y)
 {
   cout << "mouse move" << x << "-" << y << endl;
   mouseMoveX = x;
   mouseMoveY = y;
 
-  drawLine(mouseDownX, mouseDownY, x, y, "#000000");
-}
-
-// COLOR
-void App::setSelectFillColor(string color)
-{
-  selectFillColor = color;
-}
-
-void App::setSelectStrokeColor(string color)
-{
-  selectStrokeColor = color;
+  if (mode == "draw")
+  {
+    if (isDrawline)
+    {
+      data_point.push_back({x, y});
+    }
+  }
 }
 
 void App::onMouseButtonDown(int button, int x, int y)
@@ -123,9 +183,14 @@ void App::onMouseButtonDown(int button, int x, int y)
   mouseDownY = y;
 
   isSelecting = true;
-  if (button == SDL_BUTTON_LEFT)
+
+  if (mode == "draw")
   {
-    isDrawline = true;
+    if (button == SDL_BUTTON_LEFT)
+    {
+      isDrawline = true;
+      data_point.clear(); // Clear previous points
+    }
   }
 }
 
@@ -133,31 +198,31 @@ void App::onMouseButtonUp(int button, int x, int y)
 {
   mouseUpX = x;
   mouseUpY = y;
-  if (button == SDL_BUTTON_LEFT)
+
+  if (mode == "box")
   {
-    cout << "clicked left" << x << "-" << y << endl;
+    int x1 = mouseDownX, y1 = mouseDownY;
+    int x2 = mouseUpX, y2 = mouseUpY;
+    int width = x2 - x1;
+    int height = y2 - y1;
+
+    printf("inside x1: %d, y1: %d, x2: %d, y2: %d, width: %d, height: %d\n", x1, y1, x2, y2, width, height);
+    // Draw rectangle
+    data_object.push_back(
+        {
+            colors->getFill(),
+            1,
+            mouseDownX,
+            mouseDownY,
+            width,
+            height,
+        });
   }
-  else if (button == SDL_BUTTON_RIGHT)
+
+  if (mode == "draw")
   {
     isDrawline = false;
   }
-
-  int x1 = mouseDownX, y1 = mouseDownY;
-  int x2 = mouseUpX, y2 = mouseUpY;
-  int width = x2 - x1;
-  int height = y2 - y1;
-
-  printf("inside x1: %d, y1: %d, x2: %d, y2: %d, width: %d, height: %d\n", x1, y1, x2, y2, width, height);
-  // Draw rectangle
-  data_object.push_back(
-      {
-          selectFillColor,
-          1,
-          mouseDownX,
-          mouseDownY,
-          width,
-          height,
-      });
 
   isSelecting = false;
 }
@@ -167,13 +232,6 @@ void App::renderCanvas()
   // todo
 }
 
-void App::drawLine(int x1, int y1, int x2, int y2, string color)
-{
-  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red color
-  SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Reset to black
-}
-
 void App::onKeyDown(int keyCode)
 {
   switch (keyCode)
@@ -181,7 +239,7 @@ void App::onKeyDown(int keyCode)
   case SDLK_a:
     data_object.push_back(
         {
-            selectFillColor,
+            colors->getFill(),
             1,
             mouseMoveX,
             mouseMoveY,
@@ -261,4 +319,20 @@ void App::drawSelectRect()
 
     drawDottedRect(selectRect, 5);
   }
+}
+
+void App::activeDrawBox()
+{
+  mode = "box";
+}
+
+void App::activeSelect()
+{
+  mode = "select";
+}
+
+// draw
+void App::activeDrawLine()
+{
+  mode = "draw";
 }

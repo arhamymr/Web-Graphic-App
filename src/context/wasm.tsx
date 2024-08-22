@@ -38,8 +38,10 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
       const instance = await loadmodule.default();
       instance.canvas = document.getElementById('canvas');
       const myModule = new instance.App(screen.w, screen.h);
+
       setModule(myModule);
       myModule.mainLoop();
+      myModule.drawBackgroundGrid();
       instance.delete();
     } catch (error) {
       console.error(error);
@@ -47,6 +49,8 @@ export const WasmProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false);
     }
   };
+
+  console.log(module, 'module');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

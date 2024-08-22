@@ -29,10 +29,18 @@ export const ColorIndicator = () => {
 export const SwatchesPickerButton = () => {
   const { module, setFill, fill } = useWasmContext();
 
+  const handleChange = (e: React.MouseEvent) => {
+    // e.preventDefault();
+    console.log(e);
+    console.log('right click');
+  };
+
   return (
     <Popover placement="top-start">
       <PopoverTrigger>
-        <Button size={'sm'}>Color</Button>
+        <Button onClick={handleChange} size={'sm'}>
+          Color
+        </Button>
       </PopoverTrigger>
       <PopoverContent width={500} p={2}>
         <Flex gap={2}>

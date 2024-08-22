@@ -14,14 +14,17 @@ if [ -f "${TARGET_DIR}/main.wasm" ]; then
 fi
 
 
+SOURCE_FILES="cpp/app.cpp cpp/object.cpp cpp/binding.cpp cpp/colors.cpp"
+
 # build command 
-emcc cpp/app.cpp cpp/object_item.cpp cpp/binding.cpp -o ${OUTPUT_JS} \
+emcc ${SOURCE_FILES} -o ${OUTPUT_JS} \
   -s EXPORT_ES6=1 \
   -s 'EXPORT_NAME="myModule"' \
   -s 'ENVIRONMENT="web"' \
   -s USE_SDL=2 \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s MIN_SAFARI_VERSION=-1 \
+  -s USE_SDL_GFX=2 \
   -Wall -g\
   --bind 
 

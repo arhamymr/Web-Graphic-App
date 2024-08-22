@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <iostream>
-#include "object_item.hpp"
-
+#include "object.hpp"
+#include "colors.hpp"
+#include <SDL2_gfxPrimitives.h>
+#include <cmath>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -26,11 +28,7 @@ public:
   void quit();
 
   // draw
-  void drawLine(int x1, int y1, int x2, int y2, string color);
-
-  // color
-  void setSelectFillColor(string color);
-  void setSelectStrokeColor(string color);
+  void activeDrawLine();
 
   // input
   void onMouseMotion(int x, int y);
@@ -38,9 +36,15 @@ public:
   void onMouseButtonUp(int button, int x, int y);
   void onKeyDown(int keyCode);
 
-  // aid
+  // box
+  void activeDrawBox();
+
+  // select
+  void activeSelect();
   void drawSelectRect();
   void drawDottedRect(const SDL_Rect &rect, int dotSpacing);
+
+  // canvas
   void renderCanvas();
   void drawBackgroundGrid();
 
@@ -48,13 +52,17 @@ public:
   void printVectorData(const DataObject &obj);
 
 private:
+  Object *obj;
+  Colors *colors;
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
   SDL_Texture *texture = nullptr;
-  ObjectItem *obj;
+
+  string mode = "select";
   bool isRunning = true;
 
   vector<DataObject> data_object;
+  vector<SDL_Point> data_point;
   bool dragging = false;
 
   // current mouse position
@@ -69,10 +77,6 @@ private:
   SDL_Rect selectRect = {0, 0, 0, 0};
   bool isSelecting = false;
   bool isDrawline = false;
-
-  // color
-  string selectFillColor = "#000000";
-  string selectStrokeColor = "#000000";
 };
 
 #endif // APP_HPP
