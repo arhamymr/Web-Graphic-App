@@ -1,15 +1,14 @@
 #include "object.hpp"
 
-Object::Object(SDL_Renderer *r, vector<DataObject> *d)
+Object::Object(SDL_Renderer *r)
 {
   renderer = r;
-  data_object = d;
 }
 
 void Object::drawObject()
 {
 
-  for (const auto &obj : *data_object)
+  for (const auto &obj : data_object)
   {
     int r, g, b;
     hexToRGB(obj.hexColor, r, g, b);
@@ -52,4 +51,39 @@ string Object::randomColor()
   }
 
   return hexColor;
+}
+
+void Object::addDataObject(DataObject obj)
+{
+  data_object.push_back(obj);
+}
+
+void Object::removeDataObject(int id)
+{
+  // doing remove data object
+}
+
+void Object::removeLastDataObject()
+{
+  data_object.pop_back();
+}
+
+void Object::clearDataObject()
+{
+  data_object.clear();
+}
+
+vector<SDL_Point> Object::getCurrentDataPoint()
+{
+  return current_data_point;
+}
+
+void Object::addCurrentDataPoint(SDL_Point point)
+{
+  current_data_point.push_back(point);
+}
+
+void Object::clearCurrentDataPoint()
+{
+  current_data_point.clear();
 }

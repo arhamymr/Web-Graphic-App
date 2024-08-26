@@ -13,13 +13,7 @@ EMSCRIPTEN_BINDINGS(app_class)
       .function("pause", &App::pause)
       .function("activeSelect", &App::activeSelect)
       .function("activeDrawLine", &App::activeDrawLine)
-      .function("activeDrawBox", &App::activeDrawBox);
+      .function("activeDrawBox", &App::activeDrawBox)
+      .function("setFill", &App::setFill)
+      .function("setStroke", &App::setStroke);
 }
-
-EMSCRIPTEN_BINDINGS(color_class)
-{
-  class_<Colors>("Colors")
-      .constructor()
-      .function("setFill", &Colors::setFill)
-      .function("setStroke", &Colors::setStroke);
-};

@@ -9,26 +9,46 @@
 
 using namespace std;
 
+enum class ObjectType
+{
+  LINE = 0,
+  BOX = 1,
+  CIRCLE = 2,
+  TEXT = 3
+};
+
 struct DataObject
 {
 
   string hexColor;
-
   int id, x, y, width, height;
-  // int type;
+  ObjectType type;
   // bool isDragging;
 };
 
 class Object
 {
 public:
-  Object(SDL_Renderer *renderer, vector<DataObject> *data);
+  Object(SDL_Renderer *renderer);
   void drawObject();
   void hexToRGB(const string &hex, int &r, int &g, int &b);
   string randomColor();
 
+  // object
+  void addDataObject(DataObject obj);
+  void removeDataObject(int id);
+  void removeLastDataObject();
+  void clearDataObject();
+
+  // add current data point
+  void addCurrentDataPoint(SDL_Point point);
+  void clearCurrentDataPoint();
+  vector<SDL_Point> getCurrentDataPoint();
+
 private:
-  vector<DataObject> *data_object;
+  vector<DataObject> data_object;
+  vector<SDL_Point> current_data_point;
+
   SDL_Renderer *renderer = nullptr;
 };
 

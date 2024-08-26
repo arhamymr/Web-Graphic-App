@@ -47,14 +47,14 @@ export const SwatchesPickerButton = () => {
           <ChromePicker
             color={fill}
             onChangeComplete={(c) => {
-              module.setSelectFillColor(c.hex);
+              module.setFill(c.hex);
               setFill(c.hex);
             }}
           />
           <SwatchesPicker
             color={fill}
             onChangeComplete={(c) => {
-              module.setSelectFillColor(c.hex);
+              module.setFill(c.hex);
               setFill(c.hex);
             }}
           />

@@ -30,7 +30,7 @@ App::App(int width, int height)
     return;
   }
 
-  obj = new Object(renderer, &data_object);
+  obj = new Object(renderer);
   colors = new Colors();
   instance = this;
 }
@@ -111,11 +111,11 @@ void App::appLoop()
   // // Stroked rectangle
   // rectangleColor(renderer, 320, 210, 390, 260, 0xFF000000);
 
-  int brushSize = 10;
-
   // Draw lines between consecutive points using Bresenham's line algorithm
   // Example line with brush stroke
   // Example line with brush stroke
+
+  vector<SDL_Point> data_point = obj->getCurrentDataPoint();
 
   if (data_point.size() > 1)
   {
@@ -172,7 +172,7 @@ void App::onMouseMotion(int x, int y)
   {
     if (isDrawline)
     {
-      data_point.push_back({x, y});
+      obj->addCurrentDataPoint({x, y});
     }
   }
 }
@@ -189,7 +189,7 @@ void App::onMouseButtonDown(int button, int x, int y)
     if (button == SDL_BUTTON_LEFT)
     {
       isDrawline = true;
-      data_point.clear(); // Clear previous points
+      obj->clearCurrentDataPoint(); // Clear previous points
     }
   }
 }
@@ -208,7 +208,7 @@ void App::onMouseButtonUp(int button, int x, int y)
 
     printf("inside x1: %d, y1: %d, x2: %d, y2: %d, width: %d, height: %d\n", x1, y1, x2, y2, width, height);
     // Draw rectangle
-    data_object.push_back(
+    obj->addDataObject(
         {
             colors->getFill(),
             1,
@@ -237,7 +237,7 @@ void App::onKeyDown(int keyCode)
   switch (keyCode)
   {
   case SDLK_a:
-    data_object.push_back(
+    obj->addDataObject(
         {
             colors->getFill(),
             1,
@@ -335,4 +335,16 @@ void App::activeSelect()
 void App::activeDrawLine()
 {
   mode = "draw";
+}
+
+// color
+
+void App::setFill(string color)
+{
+  colors->setFill(color);
+}
+
+void App::setStroke(string color)
+{
+  colors->setStroke(color);
 }

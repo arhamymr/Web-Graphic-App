@@ -51,6 +51,10 @@ public:
   // helpers
   void printVectorData(const DataObject &obj);
 
+  // colors
+  void setFill(string color);
+  void setStroke(string color);
+
 private:
   Object *obj;
   Colors *colors;
@@ -61,8 +65,6 @@ private:
   string mode = "select";
   bool isRunning = true;
 
-  vector<DataObject> data_object;
-  vector<SDL_Point> data_point;
   bool dragging = false;
 
   // current mouse position
