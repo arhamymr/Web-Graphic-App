@@ -23,13 +23,16 @@ struct DataObject
   string hexColor;
   int id, x, y, width, height;
   ObjectType type;
-  // bool isDragging;
+  bool isSelected;
 };
 
 class Object
 {
 public:
   Object(SDL_Renderer *renderer);
+
+  // draw
+  void drawSelectIndicator();
   void drawObject();
   void hexToRGB(const string &hex, int &r, int &g, int &b);
   string randomColor();
@@ -44,6 +47,15 @@ public:
   void addCurrentDataPoint(SDL_Point point);
   void clearCurrentDataPoint();
   vector<SDL_Point> getCurrentDataPoint();
+
+  // select, hover, dragging
+  SDL_Rect createKnob(int x, int y);
+  bool isHoverObject(int x, int y, DataObject obj);
+  void handleMouseHover(int x, int y);
+  bool isInsideObject(int x, int y, DataObject obj);
+  void draggingObject(int x, int y);
+
+  void setSelectObject(int x, int y);
 
 private:
   vector<DataObject> data_object;

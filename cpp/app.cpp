@@ -146,6 +146,7 @@ void App::appLoop()
   filledPolygonRGBA(renderer, vx, vy, 4, 255, 255, 0, 255);
 
   obj->drawObject();
+  obj->drawSelectIndicator();
   drawSelectRect();
 
   SDL_RenderPresent(renderer);
@@ -184,6 +185,11 @@ void App::onMouseButtonDown(int button, int x, int y)
 
   isSelecting = true;
 
+  if (mode == "select")
+  {
+    obj->draggingObject(x, y);
+  }
+
   if (mode == "draw")
   {
     if (button == SDL_BUTTON_LEFT)
@@ -198,6 +204,11 @@ void App::onMouseButtonUp(int button, int x, int y)
 {
   mouseUpX = x;
   mouseUpY = y;
+
+  if (mode == "select")
+  {
+    obj->setSelectObject(x, y);
+  }
 
   if (mode == "box")
   {

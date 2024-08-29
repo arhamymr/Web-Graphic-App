@@ -5,6 +5,42 @@ Object::Object(SDL_Renderer *r)
   renderer = r;
 }
 
+// draw
+
+void Object::drawSelectIndicator()
+{
+  for (const auto &obj : data_object)
+  {
+    if (obj.isSelected)
+    {
+      // Set the stroke color (e.g., red)
+      SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+      SDL_Rect topLeftKnob = createKnob(obj.x, obj.y);
+      SDL_RenderDrawRect(renderer, &topLeftKnob);
+
+      SDL_Rect topRightKnob = createKnob(obj.x + obj.width, obj.y);
+      SDL_RenderDrawRect(renderer, &topRightKnob);
+
+      SDL_Rect bottomleftKnob = createKnob(obj.x, obj.y + obj.height);
+      SDL_RenderDrawRect(renderer, &bottomleftKnob);
+
+      SDL_Rect bottomRightKnob = createKnob(obj.x + obj.width, obj.y + obj.height);
+      SDL_RenderDrawRect(renderer, &bottomRightKnob);
+
+      // Define the outer stroke rectangle
+      SDL_Rect outerRect;
+      outerRect.x = obj.x - 1; // Adjust for stroke width
+      outerRect.y = obj.y - 1;
+      outerRect.w = obj.width + 2;
+      outerRect.h = obj.height + 2;
+
+      // Draw the outer stroke
+      SDL_RenderDrawRect(renderer, &outerRect);
+    }
+  }
+}
+
 void Object::drawObject()
 {
 
@@ -15,7 +51,6 @@ void Object::drawObject()
     // Set the drawing color
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 
-    // Define the rectangle
     SDL_Rect rect;
     rect.x = obj.x; // Assuming obj has x and y members for position
     rect.y = obj.y;
@@ -55,6 +90,7 @@ string Object::randomColor()
 
 void Object::addDataObject(DataObject obj)
 {
+  obj.isSelected = false;
   data_object.push_back(obj);
 }
 
@@ -86,4 +122,73 @@ void Object::addCurrentDataPoint(SDL_Point point)
 void Object::clearCurrentDataPoint()
 {
   current_data_point.clear();
+}
+
+// select object
+
+SDL_Rect Object::createKnob(int x, int y)
+{
+  SDL_Rect knobRect;
+  knobRect.x = x - 5;
+  knobRect.y = y - 5;
+  knobRect.w = 10;
+  knobRect.h = 10;
+  return knobRect;
+}
+
+void Object::setSelectObject(int x, int y)
+{
+  for (auto &obj : data_object)
+  {
+    if (x >= obj.x && x <= obj.x + obj.width && y >= obj.y && y <= obj.y + obj.height)
+    {
+      obj.isSelected = true;
+    }
+    else
+    {
+      obj.isSelected = false;
+    }
+  }
+}
+
+void Object::draggingObject(int x, int y)
+{
+  for (auto &obj : data_object)
+  {
+    if (obj.isSelected)
+    {
+      obj.x = x;
+      obj.y = y;
+    }
+  }
+}
+
+bool Object::isInsideObject(int x, int y, DataObject obj)
+{
+  if (x >= obj.x && x <= obj.x + obj.width && y >= obj.y && y <= obj.y + obj.height)
+  {
+    return true;
+  }
+  return false;
+}
+
+void Object::handleMouseHover(int x, int y)
+{
+
+  for (auto &obj : data_object)
+  {
+
+    if (isInsideObject(x, y, obj))
+    {
+      if (obj.isSelected)
+      {
+        SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));
+        break;
+      }
+    }
+    else
+    {
+      SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
+    }
+  }
 }
