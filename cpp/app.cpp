@@ -67,7 +67,6 @@ void App::appEvents()
       onMouseButtonDown(event.button.button, event.button.x, event.button.y);
       break;
     case SDL_MOUSEBUTTONUP:
-      dragging = false;
       onMouseButtonUp(event.button.button, event.button.x, event.button.y);
       break;
     }
@@ -138,10 +137,15 @@ void App::appLoop()
   rectangleRGBA(renderer, 300, 100, 400, 200, 0, 255, 0, 255);
 
   // Draw a filled blue circle
-  filledCircleRGBA(renderer, 500, 300, 50, 0, 0, 255, 255);
+  filledCircleRGBA(renderer, 1000, 300, 50, 0, 0, 255, 255);
 
   // Draw a yellow polygon
-  Sint16 vx[4] = {100, 150, 200, 150};
+  Sint16 vx[4] = {
+      100,
+      150,
+      200,
+      150,
+  };
   Sint16 vy[4] = {300, 250, 300, 350};
   filledPolygonRGBA(renderer, vx, vy, 4, 255, 255, 0, 255);
 
@@ -176,32 +180,47 @@ void App::onMouseMotion(int x, int y)
       obj->addCurrentDataPoint({x, y});
     }
   }
+
+  printf("mode: %s, isSelecting: %d, isDragging: %d\n", mode.c_str(), isSelecting, isDragging);
+  if (mode == "select" && isSelecting && isDragging)
+  {
+    obj->draggingObject(x, y);
+  }
 }
 
 void App::onMouseButtonDown(int button, int x, int y)
 {
+  printf("mouse down\n");
   mouseDownX = x;
   mouseDownY = y;
 
-  isSelecting = true;
-
-  if (mode == "select")
+  if (button == SDL_BUTTON_LEFT)
   {
-    obj->draggingObject(x, y);
-  }
-
-  if (mode == "draw")
-  {
-    if (button == SDL_BUTTON_LEFT)
+    if (mode == "box")
     {
-      isDrawline = true;
-      obj->clearCurrentDataPoint(); // Clear previous points
+      isSelecting = true;
+    }
+
+    if (mode == "select")
+    {
+      isSelecting = true;
+      isDragging = true;
+      obj->setDragOffset(x, y);
+    }
+
+    if (mode == "draw")
+    {
+      {
+        isDrawline = true;
+        obj->clearCurrentDataPoint(); // Clear previous points
+      }
     }
   }
 }
 
 void App::onMouseButtonUp(int button, int x, int y)
 {
+  printf("mouse up\n");
   mouseUpX = x;
   mouseUpY = y;
 
@@ -236,6 +255,7 @@ void App::onMouseButtonUp(int button, int x, int y)
   }
 
   isSelecting = false;
+  isDragging = false;
 }
 
 void App::renderCanvas()
@@ -311,7 +331,7 @@ void App::drawDottedRect(const SDL_Rect &rect, int dotSpacing)
 
 void App::drawSelectRect()
 {
-  if (isSelecting)
+  if (isSelecting && mode == "box")
   {
     int x1 = mouseDownX, y1 = mouseDownY;
     int x2 = mouseMoveX, y2 = mouseMoveY;

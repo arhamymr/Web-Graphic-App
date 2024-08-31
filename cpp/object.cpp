@@ -151,14 +151,26 @@ void Object::setSelectObject(int x, int y)
   }
 }
 
+void Object::setDragOffset(int x, int y)
+{
+  for (auto &obj : data_object)
+  {
+    if (obj.isSelected)
+    {
+      dragOffset.x = x - obj.x;
+      dragOffset.y = y - obj.y;
+    }
+  }
+}
+
 void Object::draggingObject(int x, int y)
 {
   for (auto &obj : data_object)
   {
     if (obj.isSelected)
     {
-      obj.x = x;
-      obj.y = y;
+      obj.x = x - dragOffset.x;
+      obj.y = y - dragOffset.y;
     }
   }
 }

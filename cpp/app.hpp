@@ -65,8 +65,6 @@ private:
   string mode = "select";
   bool isRunning = true;
 
-  bool dragging = false;
-
   // current mouse position
   int mouseMoveX = 0;
   int mouseMoveY = 0;
@@ -78,6 +76,7 @@ private:
   // select aid
   SDL_Rect selectRect = {0, 0, 0, 0};
   bool isSelecting = false;
+  bool isDragging = false;
   bool isDrawline = false;
 };
 

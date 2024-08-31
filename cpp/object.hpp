@@ -54,7 +54,7 @@ public:
   void handleMouseHover(int x, int y);
   bool isInsideObject(int x, int y, DataObject obj);
   void draggingObject(int x, int y);
-
+  void setDragOffset(int x, int y);
   void setSelectObject(int x, int y);
 
 private:
@@ -62,6 +62,7 @@ private:
   vector<SDL_Point> current_data_point;
 
   SDL_Renderer *renderer = nullptr;
+  SDL_Point dragOffset = {0, 0};
 };
 
 #endif // OBJECT_ITEM_HPP
